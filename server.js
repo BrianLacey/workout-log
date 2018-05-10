@@ -2,7 +2,7 @@ const dotenv = require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const router = require("./workoutLog.routes");
+const router = require("./app/workoutLog.routes");
 const MongoClient = require("mongodb").MongoClient;
 
 app.use(bodyParser.json());
@@ -15,4 +15,4 @@ MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
   db.close();
 });
 
-app.listen(3000);
+app.listen(4000);
