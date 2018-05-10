@@ -1,16 +1,18 @@
+const dotenv = require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const router = require("./workoutLog.routes");
+const MongoClient = require("mongodb").MongoClient;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use("/", router);
 
-// app.post("/", (req, res)=> res.status(200).send("I post!"));
-// app.get("/", (req, res)=> res.status(200).send("I get!"));
-// // app.get("/:id", (req, res)=> res.status(200).send("I get by id!"));
-// app.put("/", (req, res)=> res.status(200).send("I put!"));
-// app.delete("/", (req, res)=> res.status(200).send("I delete!"));
+MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
+  if (err) throw err;
+  console.log("Magic happens on port 27017!");
+  db.close();
+});
 
 app.listen(3000);
