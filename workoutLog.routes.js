@@ -5,7 +5,7 @@ const ObjectId = require("mongodb").ObjectId;
 module.exports = router;
 
 router.post("/", (req, res) => {
-  return MongoClient.connect("mongodb://localhost:27017/", (err, db) => {
+  return MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
@@ -17,7 +17,7 @@ router.post("/", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  return MongoClient.connect("mongodb://localhost:27017/", (err, db) => {
+  return MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
@@ -30,7 +30,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  return MongoClient.connect("mongodb://localhost:27017/", (err, db) => {
+  return MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
@@ -45,7 +45,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  return MongoClient.connect("mongodb://localhost:27017/", (err, db) => {
+  return MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
@@ -60,7 +60,7 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  return MongoClient.connect("mongodb://localhost:27017/", (err, db) => {
+  return MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db

@@ -1,3 +1,4 @@
+const dotenv = require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -8,7 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use("/", router);
 
-MongoClient.connect("mongodb://localhost:27017/workoutLog", (err, db) => {
+MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
   if (err) throw err;
   console.log("Magic happens on port 27017!");
   db.close();
