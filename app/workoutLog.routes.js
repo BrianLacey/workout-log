@@ -9,7 +9,7 @@ router.post("/", (req, res) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
-      .collection("monday")
+      .collection("exercises")
       .insertOne(req.body)
       .then(data => res.status(200).send(data.insertedId.toString()));
     db.close();
@@ -21,10 +21,15 @@ router.get("/", (req, res) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
-      .collection("monday")
+      .collection("exercises")
       .find()
       .toArray()
-      .then(data => res.status(200).send(data));
+      .then(data => {
+        for(let i=0;i<data.length;i++){
+          data[i]._id = data[i]._id.toString();
+        }
+        res.status(200).send(data)
+      });
     db.close();
   });
 });
@@ -34,11 +39,9 @@ router.get("/:id", (req, res) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
-      .collection("monday")
+      .collection("exercises")
       .findOne({ "_id": ObjectId(req.params.id) })
-      .then(data => {
-        res.status(200).send(data);
-      })
+      .then(data => res.status(200).send(data))
       .catch(err => console.log(err));
     db.close();
   });
@@ -49,7 +52,7 @@ router.put("/:id", (req, res) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
-      .collection("monday")
+      .collection("exercises")
       .replaceOne({ "_id": ObjectId(req.params.id)}, req.body)
       .then(data => {
         res.status(200).send(data);
@@ -64,7 +67,7 @@ router.delete("/:id", (req, res) => {
     if (err) throw err;
     db = db.db("workoutLog");
     db
-      .collection("monday")
+      .collection("exercises")
       .deleteOne({ "_id": ObjectId(req.params.id)})
       .then(data => {
         res.status(200).send(data);
