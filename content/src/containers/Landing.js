@@ -11,7 +11,8 @@ class Landing extends PureComponent {
       sets: "",
       reps: "",
       weight: "",
-      weekDay: ""
+      weekDay: "",
+      schedule: []
     };
     this.onChange = this.onChange.bind(this);
   }
@@ -45,68 +46,74 @@ class Landing extends PureComponent {
               }
             >
               <form>
-                <div className="col-lg-4">
-                  <Dropdown
-                    name="weekDay"
-                    label="Day of the week"
-                    values={[
-                      "Sunday",
-                      "Monday",
-                      "Tuesday",
-                      "Wednesday",
-                      "Thursday",
-                      "Friday",
-                      "Saturday"
-                    ]}
-                    default="Please choose a day of the week."
-                    onChange={this.onChange}
-                  />
+                <div className="row">
+                  <div className="col-lg-4">
+                    <FormInput
+                      type="text"
+                      name="name"
+                      label="Workout Name"
+                      value={this.state.name}
+                      onChange={this.onChange}
+                    />
+                  </div>
+                  <div className="col-lg-6 offset-lg-2">
+                    <Dropdown
+                      name="weekDay"
+                      label="Day of the week"
+                      values={[
+                        "Sunday",
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday"
+                      ]}
+                      default="Please choose a day of the week."
+                      onChange={this.onChange}
+                    />
+                  </div>
                 </div>
-                <div className="col-lg-3">
-                  <FormInput
-                    type="text"
-                    name="name"
-                    label="Workout Name"
-                    value={this.state.name}
-                    onChange={this.onChange}
-                  />
-                </div>
-                <div className="col-lg-2">
-                  <FormInput
-                    type="number"
-                    name="sets"
-                    label="Sets"
-                    value={this.state.sets}
-                    onChange={this.onChange}
-                  />
-                </div>
-                <div className="col-lg-2">
-                  <FormInput
-                    type="number"
-                    name="reps"
-                    label="Reps"
-                    value={this.state.reps}
-                    onChange={this.onChange}
-                  />
-                </div>
-                <div className="col-lg-2">
-                  <FormInput
-                    type="number"
-                    name="weight"
-                    label="Weight"
-                    value={this.state.weight}
-                    onChange={this.onChange}
-                  />
+                <div className="row">
+                  <div className="col-lg-2">
+                    <FormInput
+                      type="number"
+                      name="sets"
+                      label="Sets"
+                      value={this.state.sets}
+                      onChange={this.onChange}
+                    />
+                  </div>
+                  <div className="col-lg-2">
+                    <FormInput
+                      type="number"
+                      name="reps"
+                      label="Reps"
+                      value={this.state.reps}
+                      onChange={this.onChange}
+                    />
+                  </div>
+                  <div className="col-lg-2">
+                    <FormInput
+                      type="number"
+                      name="weight"
+                      label="Weight"
+                      value={this.state.weight}
+                      onChange={this.onChange}
+                    />
+                  </div>
                 </div>
               </form>
             </ContainerPanel>
           </div>
         </div>
-        <div className="row">
-          <div className="col">
-            <ContainerPanel />
+        {this.state.schedule.length > 0 && (
+          <div className="row">
+            <div className="col">
+              <ContainerPanel />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
