@@ -1,0 +1,16 @@
+.form-group-spacing {
+    margin-top: 16px;
+  }
+  
+.underline-text {
+    border-bottom: 2px solid black;
+    padding-bottom: 3px;
+}
+
+.column-borders {
+    border-right: 2px solid black;
+}
+
+.no-bullets {
+    list-style-type: none;
+}

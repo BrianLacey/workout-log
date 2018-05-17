@@ -11,7 +11,9 @@ router.post("/", (req, res) => {
     db
       .collection("exercises")
       .insertOne(req.body)
-      .then(data => res.status(200).send(data.insertedId.toString()));
+      .then(data => {
+        res.status(200).send(data.insertedId.toString())
+      });
     db.close();
   });
 });

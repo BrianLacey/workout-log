@@ -7,7 +7,7 @@ export default function ContainerPanel(props) {
       className={`card card-styling ${props.col}`}
     >
       <div className="card-header header-footer-padding">
-        <h4>{props.title}</h4>
+        <h3>{props.title}</h3>
       </div>
       <div className="card-body">{props.children}</div>
       {props.footer && <div className="card-footer header-footer-padding text-right">
