@@ -15,7 +15,7 @@ app.use("/", router);
 
 MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
   if (err) throw err;
-  console.log("Magic happens on port 27017!");
+  console.log("Magic happens on port 4000!");
   db.close();
 });
 

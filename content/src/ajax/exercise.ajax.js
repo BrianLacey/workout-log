@@ -4,7 +4,6 @@ export function create(item) {
   return axios
     .post(`http://localhost:4000/`, item)
     .then(result => {
-      console.log(result.data);
       return result.data;
     })
     .catch(errorResponse);
@@ -14,7 +13,6 @@ export function readAll() {
   return axios
     .get(`http://localhost:4000/`)
     .then(result => {
-      console.log(result);
       return result.data;
     })
     .catch(errorResponse);
