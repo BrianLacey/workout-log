@@ -1,9 +1,9 @@
 import React from "react";
 
 export default function Dropdown(props) {
-  const options = props.values.map((value, index) => (
-    <option key={index + 1} value={value}>
-      {value}
+  const propsOptions = props.options.map((option, index) => (
+    <option key={index + 1} value={option}>
+      {option}
     </option>
   ));
   return (
@@ -13,11 +13,12 @@ export default function Dropdown(props) {
         className="form-control"
         name={props.name}
         onChange={props.onChange}
+        value={props.value}
       >
         <option key="0" value="">
           {props.default}
         </option>
-        {options}
+        {propsOptions}
       </select>
     </div>
   );
