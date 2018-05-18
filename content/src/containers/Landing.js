@@ -22,6 +22,8 @@ class Landing extends PureComponent {
     this.onChange = this.onChange.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onSelect = this.onSelect.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   componentDidMount() {
@@ -46,19 +48,48 @@ class Landing extends PureComponent {
       weight: this.state.formData.weight,
       weekDay: this.state.formData.weekDay
     };
-    exerciseAjax.create(submission).then(result => {
-      this.setState(prevState => {
-        submission._id = result;
-        return {
-          formData: this.clearedFormData,
-          schedule: prevState.schedule.concat([submission])
-        };
+    if (this.state.formData._id) {
+      submission._id = this.state.formData._id;
+      exerciseAjax.update(submission).then(result => {
+        this.setState(prevState => {
+          for (let i = 0; i < prevState.schedule.length; i++) {
+            if (prevState.schedule[i]._id === submission._id) {
+              prevState.schedule[i] = submission;
+              return {
+                formData: this.clearedFormData,
+                schedule: prevState.schedule
+              };
+            }
+          }
+        });
       });
+    } else {
+      exerciseAjax.create(submission).then(result => {
+        this.setState(prevState => {
+          submission._id = result;
+          return {
+            formData: this.clearedFormData,
+            schedule: prevState.schedule.concat([submission])
+          };
+        });
+      });
+    }
+  }
+
+  onSelect(e, item) {
+    this.setState({
+      formData: item
     });
   }
 
-  onSelect(e) {
-    console.log(e.target);
+  onCancel(e) {
+    this.setState({
+      formData: this.clearedFormData
+    });
+  }
+
+  onDelete(e) {
+    // exerciseAjax.del(formData._id).then(result)
   }
 
   render() {
@@ -67,7 +98,7 @@ class Landing extends PureComponent {
       <ul
         key={item._id}
         className={`${item.weekDay.toLowerCase()} list-item-styling`}
-        onClick={this.onSelect}
+        onClick={e => this.onSelect(e, item)}
       >
         <li>{item.name}</li>
         <div className="no-bullets">
@@ -101,13 +132,41 @@ class Landing extends PureComponent {
               col="col-lg-12"
               title={"Add an exercise to your weekly schedule:"}
               footer={
-                <input
-                  type="button"
-                  name="submit"
-                  className="btn btn-primary"
-                  value="Submit"
-                  onClick={this.onSave}
-                />
+                <div>
+                  {this.state.formData._id ? (
+                    <input
+                      type="button"
+                      name="delete"
+                      className="btn btn-danger"
+                      value="Delete"
+                      onClick={this.onDelete}
+                    />
+                  ) : null}
+                  <input
+                    type="button"
+                    name="cancel"
+                    className="btn btn-secondary"
+                    value="Cancel"
+                    onClick={this.onCancel}
+                  />
+                  {this.state.formData._id ? (
+                    <input
+                      type="button"
+                      name="update"
+                      className="btn btn-primary"
+                      value="Update"
+                      onClick={this.onSave}
+                    />
+                  ) : (
+                    <input
+                      type="button"
+                      name="submit"
+                      className="btn btn-primary"
+                      value="Submit"
+                      onClick={this.onSave}
+                    />
+                  )}
+                </div>
               }
             >
               <form>
