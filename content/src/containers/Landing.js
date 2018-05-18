@@ -52,12 +52,13 @@ class Landing extends PureComponent {
       submission._id = this.state.formData._id;
       exerciseAjax.update(submission).then(result => {
         this.setState(prevState => {
-          for (let i = 0; i < prevState.schedule.length; i++) {
-            if (prevState.schedule[i]._id === submission._id) {
-              prevState.schedule[i] = submission;
+          let updatedSchedule = [...prevState.schedule]
+          for (let i = 0; i < updatedSchedule.length; i++) {
+            if (updatedSchedule[i]._id === submission._id) {
+              updatedSchedule[i] = submission;
               return {
                 formData: this.clearedFormData,
-                schedule: prevState.schedule
+                schedule: updatedSchedule
               };
             }
           }
@@ -67,9 +68,10 @@ class Landing extends PureComponent {
       exerciseAjax.create(submission).then(result => {
         this.setState(prevState => {
           submission._id = result;
+          let updatedSchedule = prevState.schedule.concat([submission])
           return {
             formData: this.clearedFormData,
-            schedule: prevState.schedule.concat([submission])
+            schedule: updatedSchedule
           };
         });
       });
@@ -89,7 +91,17 @@ class Landing extends PureComponent {
   }
 
   onDelete(e) {
-    // exerciseAjax.del(formData._id).then(result)
+    exerciseAjax.del(this.state.formData._id).then(result => {
+      this.setState(prevState => {
+        let updatedSchedule = prevState.schedule.filter(
+          exercise => exercise._id !== this.state.formData._id
+        );
+        return {
+          formData: this.clearedFormData,
+          schedule: updatedSchedule
+        };
+      });
+    });
   }
 
   render() {
