@@ -12,29 +12,27 @@ export function create(item) {
 export function readAll() {
   return axios
     .get(`http://localhost:4000/`)
-    .then(result => {
-      return result.data;
-    })
+    .then(result => result.data)
     .catch(errorResponse);
 }
 
-export function readyById(id) {
+export function readyById(_id) {
   return axios
-    .get(`http://localhost:4000/${id}`)
+    .get(`http://localhost:4000/${_id}`)
     .then(result => result.data)
     .catch(errorResponse);
 }
 
 export function update(item) {
   return axios
-    .get(`http://localhost:4000/${item.id}`, item)
+    .put(`http://localhost:4000/${item._id}`, item)
     .then(result => result.data)
     .catch(errorResponse);
 }
 
-export function del(id) {
+export function del(_id) {
   return axios
-    .delete(`http://localhost:4000/${id}`)
+    .delete(`http://localhost:4000/${_id}`)
     .then(result => result.data)
     .catch(errorResponse);
 }

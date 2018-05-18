@@ -50,6 +50,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
+  delete req.body._id;
   return MongoClient.connect(process.env.MONGODB_URL, (err, db) => {
     if (err) throw err;
     db = db.db("workoutLog");

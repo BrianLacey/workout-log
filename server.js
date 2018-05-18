@@ -8,7 +8,8 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.APP_URL);
-  res.header("Access-Control-Allow-Headers","Content-Type,application/json")
+  res.header("Access-Control-Allow-Headers","Content-Type,application/json");
+  res.header("Access-Control-Allow-Methods","GET,PUT,POST,DELETE");
   next();
 });
 app.use("/", router);
