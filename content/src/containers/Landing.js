@@ -8,68 +8,86 @@ import * as exerciseAjax from "../ajax/exercise.ajax";
 class Landing extends PureComponent {
   constructor(props) {
     super(props);
-    this.weekDays = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
-    ];
-    this.state = {
+    this.clearedFormData = {
       name: "",
       sets: "",
       reps: "",
       weight: "",
-      weekDay: "",
+      weekDay: ""
+    };
+    this.state = {
+      formData: this.clearedFormData,
       schedule: []
     };
     this.onChange = this.onChange.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onSelect = this.onSelect.bind(this);
   }
 
   componentDidMount() {
     exerciseAjax.readAll().then(allExercises => {
-      console.log(allExercises);
-      this.setState({
-        schedule: allExercises
-      });
+      this.setState({ schedule: allExercises });
     });
   }
 
   onChange(e) {
+    let formDataCopy = { ...this.state.formData };
+    formDataCopy[e.target.name] = e.target.value;
     this.setState({
-      [e.target.name]: e.target.value
+      formData: formDataCopy
     });
   }
 
   onSave(e) {
     let submission = {
-      name: this.state.name,
-      sets: this.state.sets,
-      reps: this.state.reps,
-      weight: this.state.weight,
-      weekDay: this.state.weekDay
+      name: this.state.formData.name,
+      sets: this.state.formData.sets,
+      reps: this.state.formData.reps,
+      weight: this.state.formData.weight,
+      weekDay: this.state.formData.weekDay
     };
-    exerciseAjax.create(submission).then(result => console.log(result));
+    exerciseAjax.create(submission).then(result => {
+      this.setState(prevState => {
+        submission._id = result;
+        return {
+          formData: this.clearedFormData,
+          schedule: prevState.schedule.concat([submission])
+        };
+      });
+    });
+  }
+
+  onSelect(e) {
+    console.log(e.target);
   }
 
   render() {
+    let sortedExercises = {};
     let unsortedExerciseList = this.state.schedule.map(item => (
-      <ul key={item._id} className={item.weekDay}>
+      <ul
+        key={item._id}
+        className={`${item.weekDay.toLowerCase()} list-item-styling`}
+        onClick={this.onSelect}
+      >
         <li>{item.name}</li>
         <div className="no-bullets">
-          <li>{item.sets}</li>
-          <li>{item.reps}</li>
-          <li>{item.weight}</li>
+          <li>Sets: {item.sets}</li>
+          <li>Reps: {item.reps}</li>
+          <li>Weight: {item.weight}</li>
         </div>
       </ul>
-    ));//Wrap this in a function that will also sort into an object of arrays caled sortedExercises.
-    console.log(unsortedExerciseList);
-    if (unsortedExerciseList[0]) {
-      console.log(unsortedExerciseList[0].props.className);
+    ));
+    for (let i = 0; i < unsortedExerciseList.length; i++) {
+      let weekDayFromClassName = unsortedExerciseList[i].props.className.split(
+        " "
+      );
+      let weekDayKey = weekDayFromClassName[0];
+      if (!sortedExercises[weekDayKey]) {
+        sortedExercises[weekDayKey] = [];
+      }
+      sortedExercises[weekDayKey].push(unsortedExerciseList[i]);
     }
+    // console.log(sortedExercises);
     return (
       <div className="container">
         <div className="row">
@@ -99,7 +117,7 @@ class Landing extends PureComponent {
                       type="text"
                       name="name"
                       label="Workout Name"
-                      value={this.state.name}
+                      value={this.state.formData.name}
                       onChange={this.onChange}
                     />
                   </div>
@@ -107,7 +125,16 @@ class Landing extends PureComponent {
                     <Dropdown
                       name="weekDay"
                       label="Day of the week"
-                      values={this.weekDays}
+                      options={[
+                        "Sunday",
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday"
+                      ]}
+                      value={this.state.formData.weekDay}
                       default="Please choose a day of the week."
                       onChange={this.onChange}
                     />
@@ -119,7 +146,7 @@ class Landing extends PureComponent {
                       type="number"
                       name="sets"
                       label="Sets"
-                      value={this.state.sets}
+                      value={this.state.formData.sets}
                       onChange={this.onChange}
                     />
                   </div>
@@ -128,7 +155,7 @@ class Landing extends PureComponent {
                       type="number"
                       name="reps"
                       label="Reps"
-                      value={this.state.reps}
+                      value={this.state.formData.reps}
                       onChange={this.onChange}
                     />
                   </div>
@@ -137,7 +164,7 @@ class Landing extends PureComponent {
                       type="number"
                       name="weight"
                       label="Weight"
-                      value={this.state.weight}
+                      value={this.state.formData.weight}
                       onChange={this.onChange}
                     />
                   </div>
@@ -153,31 +180,31 @@ class Landing extends PureComponent {
                 <div className="row">
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Sunday</h5>
-                    {/* {sortedExercises.Sunday} */}
+                    {sortedExercises.sunday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Monday</h5>
-                    {/* {sortedExercises.Monday} */}
+                    {sortedExercises.monday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Tuesday</h5>
-                    {/* {sortedExercises.Tuesday} */}
+                    {sortedExercises.tuesday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Wednesday</h5>
-                    {/* {sortedExercises.Wednesday} */}
+                    {sortedExercises.wednesday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Thursday</h5>
-                    {/* {sortedExercises.Thursday} */}
+                    {sortedExercises.thursday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Friday</h5>
-                    {/* {sortedExercises.Friday} */}
+                    {sortedExercises.friday || null}
                   </div>
                   <div className="col">
                     <h5 className="underline-text text-center">Saturday</h5>
-                    {/* {sortedExercises.Saturday} */}
+                    {sortedExercises.saturday || null}
                   </div>
                 </div>
               </ContainerPanel>
