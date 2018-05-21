@@ -24,6 +24,10 @@ class Landing extends PureComponent {
     this.onSelect = this.onSelect.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.categorizeExercisesForDisplay = this.categorizeExercisesForDisplay.bind(
+      this
+    );
+    this.disableButtons = this.disableButtons.bind(this);
   }
 
   componentDidMount() {
@@ -52,7 +56,7 @@ class Landing extends PureComponent {
       submission._id = this.state.formData._id;
       exerciseAjax.update(submission).then(result => {
         this.setState(prevState => {
-          let updatedSchedule = [...prevState.schedule]
+          let updatedSchedule = [...prevState.schedule];
           for (let i = 0; i < updatedSchedule.length; i++) {
             if (updatedSchedule[i]._id === submission._id) {
               updatedSchedule[i] = submission;
@@ -68,7 +72,7 @@ class Landing extends PureComponent {
       exerciseAjax.create(submission).then(result => {
         this.setState(prevState => {
           submission._id = result;
-          let updatedSchedule = prevState.schedule.concat([submission])
+          let updatedSchedule = prevState.schedule.concat([submission]);
           return {
             formData: this.clearedFormData,
             schedule: updatedSchedule
@@ -104,8 +108,7 @@ class Landing extends PureComponent {
     });
   }
 
-  render() {
-    let sortedExercises = {};
+  categorizeExercisesForDisplay() {
     let unsortedExerciseList = this.state.schedule.map(item => (
       <ul
         key={item._id}
@@ -120,6 +123,7 @@ class Landing extends PureComponent {
         </div>
       </ul>
     ));
+    let sortedExercises = {};
     for (let i = 0; i < unsortedExerciseList.length; i++) {
       let weekDayFromClassName = unsortedExerciseList[i].props.className.split(
         " "
@@ -130,7 +134,31 @@ class Landing extends PureComponent {
       }
       sortedExercises[weekDayKey].push(unsortedExerciseList[i]);
     }
-    // console.log(sortedExercises);
+    return sortedExercises;
+  }
+
+  disableButtons() {
+    let formDataProperties = Object.getOwnPropertyNames(this.state.formData);
+    let clearedFormDataCompare = Object.getOwnPropertyNames(
+      this.clearedFormData
+    );
+    let formDataCompare = formDataProperties.filter((property)=>(property !== "_id"));
+    if (formDataCompare.length !== clearedFormDataCompare.length) {
+      return false;
+    }
+    for (let i = 0; i < formDataCompare.length; i++) {
+      if (
+        this.state.formData[formDataCompare[i]] !==
+        this.clearedFormData[clearedFormDataCompare[i]]
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  render() {
+    let domDisplayableExercises = this.categorizeExercisesForDisplay();
     return (
       <div className="container">
         <div className="row">
@@ -139,10 +167,9 @@ class Landing extends PureComponent {
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-8 offset-lg-2" style={{ marginBottom: "5%" }}>
+          <div className="col-lg-8 offset-lg-2 card-spacing-bottom">
             <ContainerPanel
-              col="col-lg-12"
-              title={"Add an exercise to your weekly schedule:"}
+              header="Add an exercise to your weekly schedule:"
               footer={
                 <div>
                   {this.state.formData._id ? (
@@ -168,6 +195,7 @@ class Landing extends PureComponent {
                       className="btn btn-primary"
                       value="Update"
                       onClick={this.onSave}
+                      disabled={this.disableButtons()}
                     />
                   ) : (
                     <input
@@ -176,6 +204,7 @@ class Landing extends PureComponent {
                       className="btn btn-primary"
                       value="Submit"
                       onClick={this.onSave}
+                      disabled={this.disableButtons()}
                     />
                   )}
                 </div>
@@ -246,36 +275,36 @@ class Landing extends PureComponent {
         </div>
         {this.state.schedule.length > 0 && (
           <div className="row">
-            <div className="col">
-              <ContainerPanel title={"Your schedule:"}>
+            <div className="col card-spacing-bottom">
+              <ContainerPanel header="Your schedule:">
                 <div className="row">
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Sunday</h5>
-                    {sortedExercises.sunday || null}
+                    {domDisplayableExercises.sunday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Monday</h5>
-                    {sortedExercises.monday || null}
+                    {domDisplayableExercises.monday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Tuesday</h5>
-                    {sortedExercises.tuesday || null}
+                    {domDisplayableExercises.tuesday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Wednesday</h5>
-                    {sortedExercises.wednesday || null}
+                    {domDisplayableExercises.wednesday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Thursday</h5>
-                    {sortedExercises.thursday || null}
+                    {domDisplayableExercises.thursday || null}
                   </div>
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Friday</h5>
-                    {sortedExercises.friday || null}
+                    {domDisplayableExercises.friday || null}
                   </div>
                   <div className="col">
                     <h5 className="underline-text text-center">Saturday</h5>
-                    {sortedExercises.saturday || null}
+                    {domDisplayableExercises.saturday || null}
                   </div>
                 </div>
               </ContainerPanel>
