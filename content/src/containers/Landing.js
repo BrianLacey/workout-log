@@ -137,7 +137,25 @@ class Landing extends PureComponent {
     return sortedExercises;
   }
 
-  disableButtons() {}
+  disableButtons() {
+    let formDataProperties = Object.getOwnPropertyNames(this.state.formData);
+    let clearedFormDataCompare = Object.getOwnPropertyNames(
+      this.clearedFormData
+    );
+    let formDataCompare = formDataProperties.filter((property)=>(property !== "_id"));
+    if (formDataCompare.length !== clearedFormDataCompare.length) {
+      return false;
+    }
+    for (let i = 0; i < formDataCompare.length; i++) {
+      if (
+        this.state.formData[formDataCompare[i]] !==
+        this.clearedFormData[clearedFormDataCompare[i]]
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   render() {
     let domDisplayableExercises = this.categorizeExercisesForDisplay();
@@ -149,10 +167,9 @@ class Landing extends PureComponent {
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-8 offset-lg-2" style={{ marginBottom: "5%" }}>
+          <div className="col-lg-8 offset-lg-2 card-spacing-bottom">
             <ContainerPanel
-              col="col-lg-12"
-              title={"Add an exercise to your weekly schedule:"}
+              header="Add an exercise to your weekly schedule:"
               footer={
                 <div>
                   {this.state.formData._id ? (
@@ -178,6 +195,7 @@ class Landing extends PureComponent {
                       className="btn btn-primary"
                       value="Update"
                       onClick={this.onSave}
+                      disabled={this.disableButtons()}
                     />
                   ) : (
                     <input
@@ -186,7 +204,7 @@ class Landing extends PureComponent {
                       className="btn btn-primary"
                       value="Submit"
                       onClick={this.onSave}
-                      // disabled={}
+                      disabled={this.disableButtons()}
                     />
                   )}
                 </div>
@@ -257,8 +275,8 @@ class Landing extends PureComponent {
         </div>
         {this.state.schedule.length > 0 && (
           <div className="row">
-            <div className="col">
-              <ContainerPanel title={"Your schedule:"}>
+            <div className="col card-spacing-bottom">
+              <ContainerPanel header="Your schedule:">
                 <div className="row">
                   <div className="col column-borders">
                     <h5 className="underline-text text-center">Sunday</h5>
