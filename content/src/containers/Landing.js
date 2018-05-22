@@ -54,31 +54,37 @@ class Landing extends PureComponent {
     };
     if (this.state.formData._id) {
       submission._id = this.state.formData._id;
-      exerciseAjax.update(submission).then(result => {
-        this.setState(prevState => {
-          let updatedSchedule = [...prevState.schedule];
-          for (let i = 0; i < updatedSchedule.length; i++) {
-            if (updatedSchedule[i]._id === submission._id) {
-              updatedSchedule[i] = submission;
-              return {
-                formData: this.clearedFormData,
-                schedule: updatedSchedule
-              };
+      exerciseAjax
+        .update(submission)
+        .then(result => {
+          this.setState(prevState => {
+            let updatedSchedule = [...prevState.schedule];
+            for (let i = 0; i < updatedSchedule.length; i++) {
+              if (updatedSchedule[i]._id === submission._id) {
+                updatedSchedule[i] = submission;
+                return {
+                  formData: this.clearedFormData,
+                  schedule: updatedSchedule
+                };
+              }
             }
-          }
-        });
-      });
+          });
+        })
+        .catch(err => console.log(err));
     } else {
-      exerciseAjax.create(submission).then(result => {
-        this.setState(prevState => {
-          submission._id = result;
-          let updatedSchedule = prevState.schedule.concat([submission]);
-          return {
-            formData: this.clearedFormData,
-            schedule: updatedSchedule
-          };
-        });
-      });
+      exerciseAjax
+        .create(submission)
+        .then(result => {
+          this.setState(prevState => {
+            submission._id = result;
+            let updatedSchedule = prevState.schedule.concat([submission]);
+            return {
+              formData: this.clearedFormData,
+              schedule: updatedSchedule
+            };
+          });
+        })
+        .catch(err => console.log(err));
     }
   }
 
@@ -142,7 +148,9 @@ class Landing extends PureComponent {
     let clearedFormDataCompare = Object.getOwnPropertyNames(
       this.clearedFormData
     );
-    let formDataCompare = formDataProperties.filter((property)=>(property !== "_id"));
+    let formDataCompare = formDataProperties.filter(
+      property => property !== "_id"
+    );
     if (formDataCompare.length !== clearedFormDataCompare.length) {
       return false;
     }
