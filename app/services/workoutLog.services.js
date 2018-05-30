@@ -19,7 +19,7 @@ function create(body) {
     .then(data => {
       data.insertedId.toString();
     })
-    .catch(err => res.status(500).send(err));
+    .catch(err => err);
 }
 
 function readAll() {
@@ -37,7 +37,7 @@ function readAll() {
       }
       return data;
     })
-    .catch(err => res.status(500).send(err));
+    .catch(err => err);
 }
 
 function readById(id) {
@@ -52,7 +52,7 @@ function readById(id) {
       data._id = data._id.toString();
       return data;
     })
-    .catch(err => res.status(500).send(err));
+    .catch(err => err);
 }
 function update(id, body) {
   return MongoClient.connect(process.env.MONGODB_URL)
@@ -66,7 +66,7 @@ function update(id, body) {
       data._id = data._id.toString();
       return data;
     })
-    .catch(err => res.status(500).send(err));
+    .catch(err => err);
 }
 function del(id) {
   return MongoClient.connect(process.env.MONGODB_URL)
@@ -77,5 +77,5 @@ function del(id) {
         .deleteOne({ _id: ObjectId(id) });
     })
     .then(data => res.status(200).send(data))
-    .catch(err => res.status(500).send(err));
+    .catch(err => err);
 }
