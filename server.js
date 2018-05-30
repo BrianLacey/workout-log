@@ -1,7 +1,7 @@
 const dotenv = require("dotenv").config();
 const express = require("express");
 const app = express();
-const router = require("./app/workoutLog.routes");
+const router = require("./app/routes/workoutLog.routes");
 const MongoClient = require("mongodb").MongoClient;
 
 app.use(express.json());
